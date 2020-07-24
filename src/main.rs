@@ -1,19 +1,21 @@
 mod shell;
-use shell::RshJobs;
-use shell::Job;
 use shell::parser::commands::Command;
 use shell::parser::parse_command;
+use shell::Job;
+use shell::RshJobs;
 use std::io;
 
-fn main()  -> std::io::Result<()> {
+fn main() -> std::io::Result<()> {
     let mut rsh = RshJobs::new();
-    let job1 = Job{ job_id : 1, job_command : String::from("micro-shell")};
+    let job1 = Job {
+        job_id: 1,
+        job_command: String::from("micro-shell"),
+    };
     let res = rsh.add_job(job1);
     let stdout = io::stdout();
     let stdin = io::stdin();
 
-
-    loop{
+    loop {
         let _res = rsh.command_prompt(&stdout);
         let mut user_input = String::with_capacity(256);
         let _cmd = rsh.wait_command_line(&mut user_input, &stdin);
@@ -26,12 +28,12 @@ fn main()  -> std::io::Result<()> {
         if user_input == "quit" {
             break;
         }
-        // 
-        let cmd : Command = parse_command(&mut user_input);
-        
-        if cmd.command_name == String::from("zaadps"){
+        //
+        let cmd: Command = parse_command(&mut user_input);
+
+        if cmd.command_name == String::from("zaadps") {
             let _res = rsh.zaad_ps(&stdout);
-            continue
+            continue;
         }
         cmd.run_command()
     }
